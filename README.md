@@ -17,10 +17,38 @@ output of the same run is [`proof/run-log.txt`](proof/run-log.txt).
 
 | Time | What you are watching |
 | --- | --- |
-| 0:00 | signing in, the password typed key by key from an environment variable |
+| 0:00 | signing in, the password typed key by key from an environment variable, both credential fields blurred on screen |
 | 0:07 | first pass, 31 listings found and 31 alerts sent |
 | 0:12 | second pass over the same pages, 31 found, **zero** new, zero alerts |
-| 0:17 | the row selector renamed to simulate a site redesign: the run raises a parser alarm and marks nothing as seen |
+| 0:16 | the row selector renamed to simulate a site redesign: the run raises a parser alarm and marks nothing as seen |
+
+## Am I still signed in?
+
+`status.py` answers that without typing anything. Exit code 0 means yes, 1 means no, so a timer can
+re-run the login before a collection starts.
+
+```
+$ python3 status.py --config config.quotes.json
+session file  storage_state.json
+signed in     NO, there is no session file yet
+              run: python3 login.py --config config.quotes.json
+exit 1
+
+$ python3 login.py --config config.quotes.json
+opening https://quotes.toscrape.com/login
+typing d***o
+signed in, session written to storage_state.json
+1 cookies stored, no credentials on disk
+
+$ python3 status.py --config config.quotes.json
+session file  storage_state.json
+written       0.0 hours ago, 1 cookies
+checked       https://quotes.toscrape.com/page/1/
+signed in     YES
+exit 0
+```
+
+## The watcher run behind the recording
 
 ```
 === PASS 1: empty database
@@ -37,8 +65,12 @@ alert: parser warning sent via alerts_broken.log
 ## What it gets right
 
 **The session is a file, not a password in code.** `login.py` types the credentials from
-`LOGIN_USERNAME` and `LOGIN_PASSWORD`, then writes Playwright storage state to disk. Every later run
-reuses that file. The password is never logged, never printed, never stored.
+`LOGIN_USERNAME` and `LOGIN_PASSWORD`, read from the environment or from `.env.local`, then writes
+Playwright storage state to disk. Every later run reuses that file.
+
+**Nothing leaks into a recording.** The credential fields are blurred in the browser for the whole
+run, and the console prints the account masked (`m***n@example.com`), never the password. Pass
+`--show-credentials` if you actually want to see them.
 
 **Alert once, ever.** The item id parsed from its URL is the key in SQLite. The row is inserted
 before the alert is sent, and only an insert that actually created a row triggers one, so two
@@ -62,8 +94,9 @@ pip install playwright
 python3 -m playwright install chromium
 
 # a sandbox with a login form
-export LOGIN_USERNAME=demo LOGIN_PASSWORD=demo123
-python3 login.py   --config config.quotes.json
+cp .env.example .env.local        # or export LOGIN_USERNAME and LOGIN_PASSWORD
+python3 status.py  --config config.quotes.json   # signed in or not, types nothing
+python3 login.py   --config config.quotes.json   # sign in, fields blurred on screen
 python3 monitor.py --config config.quotes.json
 
 # a sandbox without one

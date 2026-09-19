@@ -1,12 +1,35 @@
-=== PASS 1: empty database
-[2026-09-19T06:46:18+00:00] alert: delivering-the-truth-quaker-midwife-mystery-1_464 sent via alerts_books.log
-[2026-09-19T06:46:18+00:00] pass done: pages=2 found=31 new=31 filtered=0 invalid=0 total_seen=31
+=== status: no session yet
+env: read 2 values from /private/tmp/claude-501/-Users-ersaptaaristo-Downloads-0000-ersapta-office/e18695f0-ef13-4c0c-8130-c77c088f9dbe/scratchpad/session-scraper/.env.local
+session file  storage_state.json
+signed in     NO, there is no session file yet
+              run: python3 login.py --config config.quotes.json
+exit=1
 
-=== PASS 2: same pages again
-[2026-09-19T06:46:21+00:00] page: https://books.toscrape.com/catalogue/category/books/mystery_3/index.html
-[2026-09-19T06:46:23+00:00] pass done: pages=2 found=31 new=0 filtered=0 invalid=0 total_seen=31
+=== login: credentials typed from .env.local, fields blurred on screen
+opening https://quotes.toscrape.com/login
+typing d***o
+signed in, session written to storage_state.json
+1 cookies stored, no credentials on disk
+video proof/video/d10a96e5a7e5c82545c87f90d0a5e01e.webm
 
-=== PASS 3: selectors renamed, as if the site redesigned
-[2026-09-19T06:46:46+00:00] parser: expected rows never appeared
-[2026-09-19T06:46:46+00:00] alert: parser warning sent via alerts_broken.log
+=== status: signed in
+session file  storage_state.json
+written       0.0 hours ago, 1 cookies
+checked       https://quotes.toscrape.com/page/1/
+signed in     YES
 exit=0
+
+=== pass 1: empty database
+[2026-09-19T07:16:36+00:00] alert: delivering-the-truth-quaker-midwife-mystery-1_464 sent via alerts_books.log
+[2026-09-19T07:16:36+00:00] pass done: pages=2 found=31 new=31 filtered=0 invalid=0 total_seen=31
+
+=== pass 2: same pages again
+[2026-09-19T07:16:41+00:00] pass done: pages=2 found=31 new=0 filtered=0 invalid=0 total_seen=31
+
+=== pass 3: selectors renamed, as if the site redesigned
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'config.books.broken.json'
+
+=== pass 3: selectors renamed, as if the site redesigned
+[2026-09-19T07:17:18+00:00] parser: expected rows never appeared
+[2026-09-19T07:17:19+00:00] alert: parser warning sent via alerts_broken.log

@@ -37,6 +37,26 @@ from _env import load_env_file
 load_env_file()
 
 
+BLUR_CSS = """
+  input[type=email], input[type=password], input[name*=user i], input[name*=email i],
+  input[autocomplete=username], input[autocomplete=current-password] {
+    filter: blur(6px) !important;
+  }
+"""
+
+
+def hide_credentials(context) -> None:
+    """Blur the credential fields in every page, so a screen recording never shows them."""
+    context.add_init_script(
+        "(() => { const css = " + repr(BLUR_CSS) + ";"
+        " const put = () => { if (document.head && !document.getElementById('cred-blur')) {"
+        "   const s = document.createElement('style'); s.id = 'cred-blur'; s.textContent = css;"
+        "   document.head.appendChild(s); } };"
+        " document.addEventListener('DOMContentLoaded', put); put();"
+        " new MutationObserver(put).observe(document.documentElement, {childList: true, subtree: true}); })()"
+    )
+
+
 def human_type(page, selector: str, text: str) -> None:
     """Type like a person: click the field, then key by key with uneven gaps."""
     page.click(selector)
@@ -46,11 +66,23 @@ def human_type(page, selector: str, text: str) -> None:
     time.sleep(random.uniform(0.3, 0.8))
 
 
+def mask(value: str) -> str:
+    """maayansharif@gmail.com -> m***f@gmail.com"""
+    if "@" in value:
+        name, _, domain = value.partition("@")
+        head = name[:1]
+        tail = name[-1:] if len(name) > 2 else ""
+        return f"{head}***{tail}@{domain}"
+    return value[:1] + "***" + value[-1:] if len(value) > 2 else "***"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Sign in and save the session")
     parser.add_argument("--config", required=True)
     parser.add_argument("--headed", action="store_true", help="show the browser window")
     parser.add_argument("--video", default="", help="directory to record the run into")
+    parser.add_argument("--show-credentials", action="store_true",
+                        help="do not blur the credential fields (off by default)")
     args = parser.parse_args()
 
     config = json.loads(pathlib.Path(args.config).read_text())
@@ -76,12 +108,14 @@ def main() -> int:
             context_options["record_video_dir"] = args.video
             context_options["record_video_size"] = {"width": 1280, "height": 800}
         context = browser.new_context(**context_options)
+        if not args.show_credentials:
+            hide_credentials(context)
         page = context.new_page()
 
         print(f"opening {login_url}", flush=True)
         page.goto(login_url, wait_until="domcontentloaded")
 
-        print(f"typing {username}", flush=True)  # the user, never the password
+        print(f"typing {mask(username)}", flush=True)  # masked user, never the password
         human_type(page, login["username_selector"], username)
         human_type(page, login["password_selector"], password)
         page.click(login["submit_selector"])

@@ -1,0 +1,35 @@
+{
+  "name": "Books sandbox (broken selectors)",
+  "base_url": "https://books.toscrape.com/",
+  "searches": [
+    "catalogue/category/books/travel_2/index.html",
+    "catalogue/category/books/mystery_3/index.html"
+  ],
+  "selectors": {
+    "item": "article.product_pod_RENAMED",
+    "link": "h3 a",
+    "id_pattern": "catalogue/([^/]+)/index.html",
+    "fields": {
+      "title": "h3 a",
+      "price": "p.price_color",
+      "availability": "p.instock.availability"
+    }
+  },
+  "required_fields": [
+    "title",
+    "price",
+    "url"
+  ],
+  "min_items_per_page": 5,
+  "filters": {},
+  "alerts": {
+    "telegram_token_env": "MONITOR_TELEGRAM_TOKEN",
+    "telegram_chat_env": "MONITOR_TELEGRAM_CHAT",
+    "fallback_file": "alerts_broken.log"
+  },
+  "storage_state_path": "storage_state_books.json",
+  "database_path": "seen_books.sqlite3",
+  "interval_seconds": 900,
+  "jitter_seconds": 180,
+  "page_delay_seconds": 1.0
+}
