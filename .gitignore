@@ -7,3 +7,11 @@ out/
 proof/video/
 .env
 .env.local
+
+# Browser profiles are credentials; run output is not evidence
+*chrome-profile/
+*-profile/
+login-failed.png
+*.png
+input.csv
+queue.json
