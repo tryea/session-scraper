@@ -1,0 +1,4 @@
+0:00  sign in, credentials typed from the environment
+0:07  first pass, 31 listings are new
+0:12  second pass, same pages, zero duplicates
+0:17  selectors renamed, parser alarm, nothing marked seen

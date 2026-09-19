@@ -1,0 +1,47 @@
+{
+  "name": "Quotes sandbox",
+  "base_url": "https://quotes.toscrape.com/",
+  "searches": [
+    "/page/1/",
+    "/page/2/"
+  ],
+  "login": {
+    "url": "/login",
+    "username_selector": "#username",
+    "password_selector": "#password",
+    "submit_selector": "input[type=submit]",
+    "username_env": "LOGIN_USERNAME",
+    "password_env": "LOGIN_PASSWORD",
+    "logged_out_selector": "a[href='/login']"
+  },
+  "selectors": {
+    "item": "div.quote",
+    "link": "span a[href^='/author/']",
+    "id_pattern": "/author/([^/]+)",
+    "fields": {
+      "title": "span.text",
+      "author": "small.author",
+      "tags": "div.tags"
+    }
+  },
+  "required_fields": [
+    "title",
+    "author",
+    "url"
+  ],
+  "min_items_per_page": 5,
+  "filters": {
+    "min_text_length": 20,
+    "length_field": "title"
+  },
+  "alerts": {
+    "telegram_token_env": "MONITOR_TELEGRAM_TOKEN",
+    "telegram_chat_env": "MONITOR_TELEGRAM_CHAT",
+    "fallback_file": "alerts.log"
+  },
+  "storage_state_path": "storage_state.json",
+  "database_path": "seen.sqlite3",
+  "interval_seconds": 900,
+  "jitter_seconds": 180,
+  "page_delay_seconds": 1.0
+}

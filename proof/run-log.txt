@@ -1,0 +1,12 @@
+=== PASS 1: empty database
+[2026-09-19T06:46:18+00:00] alert: delivering-the-truth-quaker-midwife-mystery-1_464 sent via alerts_books.log
+[2026-09-19T06:46:18+00:00] pass done: pages=2 found=31 new=31 filtered=0 invalid=0 total_seen=31
+
+=== PASS 2: same pages again
+[2026-09-19T06:46:21+00:00] page: https://books.toscrape.com/catalogue/category/books/mystery_3/index.html
+[2026-09-19T06:46:23+00:00] pass done: pages=2 found=31 new=0 filtered=0 invalid=0 total_seen=31
+
+=== PASS 3: selectors renamed, as if the site redesigned
+[2026-09-19T06:46:46+00:00] parser: expected rows never appeared
+[2026-09-19T06:46:46+00:00] alert: parser warning sent via alerts_broken.log
+exit=0
